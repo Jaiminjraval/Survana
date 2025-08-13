@@ -1,0 +1,36 @@
+# General Dependencies & Logs
+#--------------------------------
+node_modules/
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+
+# Environment Variables
+#--------------------------------
+.env
+*.local
+
+
+# Frontend Specific
+#--------------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+
+
+# Editor & OS Files
+#--------------------------------
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
