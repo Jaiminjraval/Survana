@@ -1,18 +1,29 @@
-import { Box, Text, Image, useToast } from "@chakra-ui/react";
-import { usePlayer } from "../context/PlayerContext"; // Import our custom hook
+import {
+  Box,
+  Text,
+  Image,
+  useToast,
+  Link,
+  VStack,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { usePlayer } from "../context/PlayerContext";
+import FavoriteButton from "./FavoriteButton";
+import DownloadButton from "./DownloadButton";
 
-// The component now receives a single `song` object prop
 const SongCard = ({ song }) => {
-  const { playSong } = usePlayer(); // Get the playSong function from context
+  const { playSong } = usePlayer();
   const toast = useToast();
+  const cardBg = useColorModeValue("white", "gray.800");
 
   const handlePlay = () => {
-    playSong(song); // Set the current song in the global context
+    playSong(song);
     toast({
       title: `Now Playing`,
       description: `${song.title} by ${song.artist}`,
       status: "success",
-      duration: 3000,
+      duration: 2000,
       isClosable: true,
       position: "top",
     });
@@ -20,28 +31,49 @@ const SongCard = ({ song }) => {
 
   return (
     <Box
-      p={4}
-      bg="gray.800"
+      bg={cardBg}
       borderRadius="lg"
-      color="white"
-      cursor="pointer"
-      onClick={handlePlay}
-      transition="background 0.2s"
-      _hover={{ bg: "gray.700" }}
+      overflow="hidden"
+      boxShadow="md"
+      transition="all 0.2s"
+      _hover={{ transform: "translateY(-4px)", boxShadow: "xl" }}
     >
-      <Image
-        src={song.cover}
-        borderRadius="md"
-        mb={4}
-        alt={`${song.title} cover`}
-      />
-      <Text fontWeight="bold" noOfLines={1}>
-        {song.title}
-      </Text>
-      <Text fontSize="sm" color="gray.400" noOfLines={1}>
-        {song.artist}
-      </Text>
-      {/* The <audio> tag has been removed from here! */}
+      <Box position="relative">
+        <Link as={RouterLink} to={`/album/${song.albumId}`}>
+          <Image
+            src={song.cover}
+            alt={`${song.title} cover`}
+            transition="transform 0.2s"
+            _hover={{ transform: "scale(1.05)" }}
+          />
+        </Link>
+        <Box position="absolute" top={2} right={2} zIndex={1}>
+          <FavoriteButton song={song} />
+        </Box>
+        <Box position="absolute" bottom={2} right={2} zIndex={1}>
+          <DownloadButton song={song} />
+        </Box>
+      </Box>
+
+      <VStack p={4} align="start" spacing={1}>
+        <Text
+          fontWeight="bold"
+          noOfLines={1}
+          onClick={handlePlay}
+          cursor="pointer"
+        >
+          {song.title}
+        </Text>
+        <Link
+          as={RouterLink}
+          to={`/artist/${song.artistId}`}
+          _hover={{ textDecoration: "underline" }}
+        >
+          <Text fontSize="sm" color="gray.500" noOfLines={1}>
+            {song.artist}
+          </Text>
+        </Link>
+      </VStack>
     </Box>
   );
 };

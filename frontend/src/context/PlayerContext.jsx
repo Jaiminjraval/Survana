@@ -1,24 +1,45 @@
 import React, { createContext, useState, useRef, useContext } from "react";
 
-// 1. Create the context
 const PlayerContext = createContext();
 
-// 2. Create the provider component
 export const PlayerProvider = ({ children }) => {
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  // A ref to hold a reference to the actual <audio> element
+  const [queue, setQueue] = useState([]);
+  const [currentQueueIndex, setCurrentQueueIndex] = useState(-1);
   const audioRef = useRef(null);
 
-  const playSong = (song) => {
+  const playSong = (song, tracklist = []) => {
     setCurrentSong(song);
-    // The actual playback is handled by a useEffect in PlayerBar
+    if (tracklist.length > 0) {
+      setQueue(tracklist);
+      const songIndex = tracklist.findIndex((t) => t.id === song.id);
+      setCurrentQueueIndex(songIndex);
+    } else {
+      // If playing a single song, the queue is just that one song
+      setQueue([song]);
+      setCurrentQueueIndex(0);
+    }
+  };
+
+  const playNext = () => {
+    if (queue.length > 1 && currentQueueIndex < queue.length - 1) {
+      const nextIndex = currentQueueIndex + 1;
+      setCurrentSong(queue[nextIndex]);
+      setCurrentQueueIndex(nextIndex);
+    }
+  };
+
+  const playPrev = () => {
+    if (queue.length > 1 && currentQueueIndex > 0) {
+      const prevIndex = currentQueueIndex - 1;
+      setCurrentSong(queue[prevIndex]);
+      setCurrentQueueIndex(prevIndex);
+    }
   };
 
   const togglePlayPause = () => {
-    if (!currentSong) return; // Do nothing if no song is loaded
-
+    if (!currentSong) return;
     if (isPlaying) {
       audioRef.current.pause();
     } else {
@@ -27,15 +48,17 @@ export const PlayerProvider = ({ children }) => {
     setIsPlaying(!isPlaying);
   };
 
-  // The 'value' object holds all the state and functions
-  // that will be available to any component wrapped by this provider.
   const value = {
     currentSong,
     isPlaying,
     audioRef,
     playSong,
     togglePlayPause,
-    setIsPlaying, // Exposing this to update play state from the <audio> element events
+    setIsPlaying,
+    playNext,
+    playPrev,
+    isNextAvailable: queue.length > 1 && currentQueueIndex < queue.length - 1,
+    isPrevAvailable: queue.length > 1 && currentQueueIndex > 0,
   };
 
   return (
@@ -43,7 +66,6 @@ export const PlayerProvider = ({ children }) => {
   );
 };
 
-// 3. Create a custom hook for easy access to the context
 export const usePlayer = () => {
   return useContext(PlayerContext);
 };
