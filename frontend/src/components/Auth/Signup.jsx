@@ -7,99 +7,132 @@ import {
   Text,
   useToast,
   Center,
+  Flex,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const toast = useToast();
-  const navigate = useNavigate(); // 2. Initialize the navigate function
+  const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+
+  const formBgColor = useColorModeValue(
+    "rgba(255, 255, 255, 0.7)",
+    "rgba(2, 3, 10, 0.7)"
+  );
+  const textColor = useColorModeValue("gray.800", "white");
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.password) {
-      toast({
-        title: "Please fill all fields",
-        status: "warning",
-        isClosable: true,
-      });
-      return;
+      return toast({ title: "Please fill all fields", status: "warning" });
     }
 
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Creating account with:", form);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast({ title: "Account created!", status: "success" });
+        window.location.href = "/";
+      } else {
+        throw new Error(data.error || "Failed to create account");
+      }
+    } catch (error) {
+      toast({
+        title: "An error occurred",
+        description: error.message,
+        status: "error",
+      });
+    } finally {
       setIsLoading(false);
-      toast({ title: "Account created!", status: "success", isClosable: true });
-      // 3. Navigate to the home page on successful signup
-      navigate("/");
-    }, 1500);
+    }
   };
 
   return (
-    <Center h="100vh" bg="gray.900">
+    <Flex minH="100vh" w="full">
+      {/* Background Image Section */}
       <Box
-        maxW="sm"
-        w="full"
-        p={8}
-        borderWidth={1}
-        borderRadius="lg"
-        boxShadow="lg"
-        bg="gray.800"
-      >
-        <Heading mb={6} textAlign="center">
-          Sign Up for Survana
-        </Heading>
-        <form onSubmit={handleSubmit}>
-          <VStack spacing={4}>
-            <Input
-              name="name"
-              placeholder="Name"
-              onChange={handleChange}
-              value={form.name}
-            />
-            <Input
-              name="email"
-              placeholder="Email"
-              onChange={handleChange}
-              value={form.email}
-            />
-            <Input
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-              value={form.password}
-            />
+        flex="1"
+        display={{ base: "none", md: "block" }}
+        bgImage="url('https://images.unsplash.com/photo-1585298723682-7115561c51b7?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"
+        bgSize="cover"
+        bgPosition="center"
+      />
+
+      {/* Form Section */}
+      <Center flex="1" p={8}>
+        <Box
+          w="full"
+          maxW="md"
+          p={8}
+          borderRadius="xl"
+          boxShadow="2xl"
+          bg={formBgColor}
+          backdropFilter="blur(10px)"
+          border="1px"
+          borderColor={useColorModeValue("gray.200", "gray.700")}
+        >
+          <Heading mb={6} textAlign="center" color={textColor}>
+            Join Survana Today
+          </Heading>
+          <Text mb={6} textAlign="center" color={textColor} opacity={0.7}>
+            Create your account to start discovering new music.
+          </Text>
+          <form onSubmit={handleSubmit}>
+            <VStack spacing={4}>
+              <Input
+                name="name"
+                placeholder="Name"
+                onChange={handleChange}
+                value={form.name}
+              />
+              <Input
+                name="email"
+                placeholder="Email"
+                onChange={handleChange}
+                value={form.email}
+              />
+              <Input
+                name="password"
+                type="password"
+                placeholder="Password"
+                onChange={handleChange}
+                value={form.password}
+              />
+              <Button
+                colorScheme="brand"
+                type="submit"
+                width="full"
+                isLoading={isLoading}
+              >
+                Sign Up
+              </Button>
+            </VStack>
+          </form>
+          <Text mt={4} textAlign="center" color={textColor}>
+            Already have an account?{" "}
             <Button
-              colorScheme="teal"
-              type="submit"
-              width="full"
-              isLoading={isLoading}
+              variant="link"
+              color="brand.400"
+              onClick={() => navigate("/login")}
             >
-              Sign Up
+              Login
             </Button>
-          </VStack>
-        </form>
-        <Text mt={4} textAlign="center">
-          Already have an account?{" "}
-          {/* 4. Use navigate to switch to the login page */}
-          <Button
-            variant="link"
-            color="teal.500"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </Button>
-        </Text>
-      </Box>
-    </Center>
+          </Text>
+        </Box>
+      </Center>
+    </Flex>
   );
 };
 
