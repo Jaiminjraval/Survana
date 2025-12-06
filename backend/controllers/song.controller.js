@@ -1,21 +1,19 @@
 import axios from "axios";
 import User from "../models/user.model.js";
 
-// Helper function to format song data from Deezer, now with more details
 const formatSongData = (track) => {
   if (!track || !track.album || !track.artist) return null;
   return {
     id: track.id,
     title: track.title,
     artist: track.artist.name,
-    artistId: track.artist.id, // <-- ADDED
-    albumId: track.album.id, // <-- ADDED
+    artistId: track.artist.id,
+    albumId: track.album.id, 
     cover: track.album.cover_medium,
     audio: track.preview,
-    duration: track.duration, // <-- ADDED
+    duration: track.duration, 
   };
 };
-
 
 export const getArtistDetails = async (req, res) => {
   try {
@@ -66,12 +64,30 @@ export const getAlbumDetails = async (req, res) => {
   }
 };
 
+// export const getTrendingSongs = async (req, res) => {
+//   try {
+//     const response = await axios.get(
+//       "https://api.deezer.com/chart/0/tracks?limit=50"
+//     );
+//     res
+//       .status(200)
+//       .json(response.data.data.map(formatSongData).filter(Boolean));
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to fetch trending songs" });
+//   }
+// };
 
 export const getTrendingSongs = async (req, res) => {
   try {
-    const response = await axios.get(
-      "https://api.deezer.com/chart/0/tracks?limit=50"
-    );
+    const proxy =
+      "https://api.scraperapi.com?api_key=eb8659017d946e9eb97a12a7ee6cb320&url=";
+    const target = "https://api.deezer.com/chart/0/tracks?limit=50";
+
+    const response = await axios.get(proxy + encodeURIComponent(target));
+    // const response = await axios.get(
+    //   "https://api.deezer.com/chart/0/tracks?limit=50"
+    // );
+    console.log(response, ">>>>>>>>>>>>>>response");
     res
       .status(200)
       .json(response.data.data.map(formatSongData).filter(Boolean));
