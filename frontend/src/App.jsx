@@ -1,33 +1,22 @@
 import { Routes, Route } from "react-router-dom";
-
-// Import your new layout and route components
-import MainLayout from "./components/mainLayout";
-import ProtectedRoute from "./components/ProtectedRoute";
-
-// Import your page components
-import Home from "./pages/Home";
-import Login from "./components/Auth/Login";
-import Signup from "./components/Auth/SignUp";
-
-// Dummy components for other pages until you build them
-const Search = () => (
-  <h1 style={{ color: "white", marginLeft: "260px" }}>Search Page</h1>
-);
-const Library = () => (
-  <h1 style={{ color: "white", marginLeft: "260px" }}>Library Page</h1>
-);
+import MainLayout from "./components/MainLayout.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Home from "./pages/Home.jsx";
+import Login from "./components/Auth/Login.jsx";
+import Signup from "./components/Auth/Signup.jsx";
+import Library from "./pages/Library.jsx";
+import Premium from "./pages/Premium.jsx";
+import ArtistPage from "./pages/ArtistPage.jsx";
+import AlbumPage from "./pages/AlbumPage.jsx";
+import ChartsPage from "./pages/ChartsPage.jsx";
+import AccountPage from "./pages/AccountPage.jsx";
 
 function App() {
   return (
     <Routes>
-      {/* --- Public Routes --- */}
-      {/* These routes are accessible to everyone, even if not logged in. */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
-      {/* --- Protected Routes --- */}
-      {/* The user must be authenticated to see these pages. */}
-      {/* If not, they will be redirected to "/login". */}
       <Route element={<ProtectedRoute />}>
         <Route
           path="/"
@@ -37,11 +26,19 @@ function App() {
             </MainLayout>
           }
         />
-        <Route
+        {/* <Route
           path="/search"
           element={
             <MainLayout>
               <Search />
+            </MainLayout>
+          }
+        /> */}
+        <Route
+          path="/charts"
+          element={
+            <MainLayout>
+              <ChartsPage />
             </MainLayout>
           }
         />
@@ -50,6 +47,38 @@ function App() {
           element={
             <MainLayout>
               <Library />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/premium"
+          element={
+            <MainLayout>
+              <Premium />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <MainLayout>
+              <AccountPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/artist/:artistId"
+          element={
+            <MainLayout>
+              <ArtistPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/album/:albumId"
+          element={
+            <MainLayout>
+              <AlbumPage />
             </MainLayout>
           }
         />
