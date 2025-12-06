@@ -20,8 +20,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const formBgColor = useColorModeValue(
-    "rgba(255, 255, 255, 0.7)", // Light mode with transparency
-    "rgba(2, 4, 11, 0.7)" // Dark mode with transparency
+    "rgba(255, 255, 255, 0.7)", 
+    "rgba(2, 4, 11, 0.7)" 
   );
   const textColor = useColorModeValue("gray.800", "white");
 
@@ -61,16 +61,14 @@ const Login = () => {
 
   return (
     <Flex minH="100vh" w="full">
-      {/* Background Image Section (Visible on md screens and up) */}
       <Box
         flex="1"
         display={{ base: "none", md: "block" }}
-        bgImage="url('https://images.unsplash.com/photo-1585298723682-7115561c51b7?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" // Make sure your image is in the /public folder
+        bgImage="url('Headphone.avif')" 
         bgSize="cover"
         bgPosition="center"
       />
 
-      {/* Form Section */}
       <Center flex="1" p={8}>
         <Box
           w="full"
@@ -79,7 +77,7 @@ const Login = () => {
           borderRadius="xl"
           boxShadow="2xl"
           bg={formBgColor}
-          backdropFilter="blur(10px)" // The "glass" effect
+          backdropFilter="blur(10px)" 
           border="1px"
           borderColor={useColorModeValue("gray.200", "gray.700")}
         >
