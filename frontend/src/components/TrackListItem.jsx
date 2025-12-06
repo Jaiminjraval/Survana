@@ -88,7 +88,6 @@ const TrackListItem = ({ track, tracklist, index, showImage = false }) => {
         </Box>
       </HStack>
 
-      {/* Group the action buttons */}
       <HStack
         spacing={2}
         pr={4}

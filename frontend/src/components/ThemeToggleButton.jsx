@@ -7,7 +7,7 @@ const ThemeToggleButton = () => {
   return (
     <IconButton
       aria-label="Toggle theme"
-      icon={colorMode === "light" ? <FaMoon /> : <FaSun />} // Show moon in light mode, sun in dark
+      icon={colorMode === "light" ? <FaMoon /> : <FaSun />} 
       onClick={toggleColorMode}
       isRound={true}
       size="md"

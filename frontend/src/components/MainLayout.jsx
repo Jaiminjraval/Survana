@@ -1,33 +1,38 @@
 import React from "react";
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Box, Button, HStack, useToast } from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
 import PlayerBar from "./PlayerBar";
 import ThemeToggleButton from "./ThemeToggleButton.jsx";
 
-// This component wraps all your main pages to provide a consistent layout
 const MainLayout = ({ children }) => {
-  const handleLogout = () => {
-    // In a real app, you would clear the user's token and redirect
-    console.log("User logged out!");
-    // For now, we'll just reload to simulate the auth check again
-    window.location.href = "/login";
+  const toast = useToast();
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (res.ok) {
+        toast({ title: "Logged out successfully", status: "success", isClosable: true });
+        window.location.href = "/login"; // Redirect to login page
+      } else {
+        throw new Error("Failed to log out");
+      }
+    } catch (error) {
+      toast({ title: "Error", description: error.message, status: "error", isClosable: true });
+    }
   };
 
   return (
     <>
       <Sidebar />
       <HStack spacing={4} position="fixed" top={4} right={4} zIndex={20}>
-        <ThemeToggleButton /> {/* <-- ADD THE BUTTON HERE */}
+        <ThemeToggleButton />
         <Button fontStyle="italic" onClick={handleLogout} colorScheme="red">
           Log Out
         </Button>
       </HStack>
-      {/* This Box is the main content area */}
       <Box ml="240px" mb="100px" p={6}>
-        {children}{" "}
-        {/* The actual page component (e.g., Home) will be rendered here */}
+        {children}
       </Box>
-
       <PlayerBar />
     </>
   );

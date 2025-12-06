@@ -36,7 +36,6 @@ const Home = () => {
           Trending Songs
         </Heading>
         <SimpleGrid columns={[2, 3, 4, 5, 6]} spacing={6}>
-          {/* Create an array of 12 skeletons */}
           {Array.from({ length: 12 }).map((_, i) => (
             <SongCardSkeleton key={i} />
           ))}

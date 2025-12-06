@@ -25,7 +25,7 @@ const AlbumPage = () => {
 
   useEffect(() => {
     const fetchAlbumData = async () => {
-      document.documentElement.scrollTo(0, 0); // Scroll to top on page load
+      document.documentElement.scrollTo(0, 0); 
       setLoading(true);
       setError(null);
       try {

@@ -1,21 +1,21 @@
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-
-// This is a placeholder hook for your real authentication logic.
-const useAuth = () => {
-  // In a real application, you would check for a valid token in localStorage,
-  // or check a global state from a Context API or Redux.
-  const isAuthenticated = true; // <-- CHANGE THIS TO `false` TO TEST THE REDIRECT
-
-  if (isAuthenticated) {
-    return true;
-  }
-  return false;
-};
+import { useAuth } from "../context/AuthContext.jsx";
+import { Center, Spinner } from "@chakra-ui/react";
 
 const ProtectedRoute = () => {
-  const isAuth = useAuth();
-  return isAuth ? <Outlet /> : <Navigate to="/login" />;
+  const { authUser, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <Center h="100vh" bg="gray.900">
+        <Spinner size="xl" color="brand.500" />
+      </Center>
+    );
+  }
+
+  // If loading is done, check if we have a user. If so, show the page.
+  // If not, redirect to the login page.
+  return authUser ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
